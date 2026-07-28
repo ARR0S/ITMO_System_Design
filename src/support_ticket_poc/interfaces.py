@@ -6,10 +6,11 @@ from typing import Protocol
 
 from support_ticket_poc.models import (
     ClassificationPrediction,
-    EligibilityDecision,
+    FinalAction,
     KnowledgeFragment,
     PIIInspection,
-    PolicyDecision,
+    ProcessingResult,
+    ProcessingStatus,
     RiskLevel,
     Ticket,
 )
@@ -70,6 +71,14 @@ class TicketRepository(Protocol):
         """Return a stored ticket by its stable identifier."""
         ...
 
+    def save_result(self, result: ProcessingResult) -> None:
+        """Store the completed processing result for idempotent replay."""
+        ...
+
+    def get_result(self, ticket_id: str) -> ProcessingResult | None:
+        """Return a completed result when the ticket was already processed."""
+        ...
+
 
 class ReviewRepository(Protocol):
     """Store tickets that require a support operator."""
@@ -78,8 +87,8 @@ class ReviewRepository(Protocol):
         self,
         ticket: Ticket,
         prediction: ClassificationPrediction,
-        team: str,
-        risk: RiskLevel,
+        team: str | None,
+        risk: RiskLevel | None,
         reason: str,
     ) -> None:
         """Add the original ticket and escalation context for review."""
@@ -93,9 +102,13 @@ class AuditRepository(Protocol):
         self,
         ticket_id: str,
         prediction: ClassificationPrediction,
-        risk: RiskLevel,
-        decision: EligibilityDecision | PolicyDecision,
-        source: KnowledgeFragment | None = None,
+        team: str | None,
+        risk: RiskLevel | None,
+        source_ids: tuple[str, ...],
+        llm_status: str,
+        action: FinalAction,
+        status: ProcessingStatus,
+        reason: str,
     ) -> None:
         """Persist the decision inputs, source, outcome, and human-readable reason."""
         ...

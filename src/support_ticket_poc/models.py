@@ -106,3 +106,49 @@ class PolicyDecision:
     action: FinalAction
     status: ProcessingStatus
     reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class ProcessingResult:
+    """Completed business outcome returned by ticket processing."""
+
+    ticket_id: str
+    category: str
+    confidence: float
+    model_version: str
+    team: str | None
+    risk: RiskLevel | None
+    action: FinalAction
+    status: ProcessingStatus
+    reason: str
+    answer: str | None
+    source_ids: tuple[str, ...]
+
+
+@dataclass(frozen=True, slots=True)
+class ReviewItem:
+    """Original request and decision context for a support operator."""
+
+    ticket: Ticket
+    prediction: ClassificationPrediction
+    team: str | None
+    risk: RiskLevel | None
+    reason: str
+
+
+@dataclass(frozen=True, slots=True)
+class AuditEvent:
+    """Structured decision record that intentionally excludes raw ticket text."""
+
+    occurred_at: datetime
+    ticket_id: str
+    category: str
+    confidence: float
+    classifier_version: str
+    team: str | None
+    risk: RiskLevel | None
+    source_ids: tuple[str, ...]
+    llm_status: str
+    action: FinalAction
+    status: ProcessingStatus
+    reason: str

@@ -1,0 +1,15 @@
+[
+  {
+    "document_id": "kb-notifications",
+    "chunk_id": "disable-email-notifications",
+    "document_version": "1",
+    "source_name": "Notification settings guide",
+    "keywords": [
+      "уведомления",
+      "email",
+      "отключить",
+      "рассылка"
+    ],
+    "text": "Откройте настройки профиля, выберите раздел «Уведомления» и отключите email-уведомления."
+  }
+]
